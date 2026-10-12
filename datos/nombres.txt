@@ -1,0 +1,28 @@
+Brasil
+Perú
+Alemania
+Italia
+India
+Aerolíneas Argentinas
+GOL
+Lufthansa
+ITA Airways
+IndiGo
+Delta Air Lines
+American Airlines
+Ethiopian Airlines
+GRU	Aeropuerto Internacional de São Paulo-Guarulhos
+GIG	Aeropuerto Internacional de Río de Janeiro-Galeão
+BSB	Aeropuerto Internacional de Brasilia
+LIM	Aeropuerto Internacional Jorge Chávez (Lima)
+CUZ	Aeropuerto Internacional Alejandro Velasco Astete (Cusco)
+AQP	Aeropuerto Internacional Rodríguez Ballón (Arequipa)
+FRA	Aeropuerto de Fráncfort del Meno
+MUC	Aeropuerto de Múnich-Franz Josef Strauss
+BER	Aeropuerto de Berlín-Brandeburgo
+FCO	Aeropuerto de Roma-Fiumicino
+MXP	Aeropuerto de Milán-Malpensa
+VCE	Aeropuerto de Venecia-Marco Polo
+DEL	Aeropuerto Internacional Indira Gandhi (Nueva Delhi)
+BOM	Aeropuerto Internacional Chhatrapati Shivaji Maharaj (Mumbai)
+BLR	eropuerto Internacional Kempegowda (Bangalore)

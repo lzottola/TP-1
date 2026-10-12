@@ -1,0 +1,55 @@
+Listado de totales de pasajeros
+País     Aerolínea             Cant. Pasaeros
+Brasil   Aerolíneas Argentinas	2917
+Brasil   GOL                 	1605
+Brasil   Lufthansa           	0
+Brasil   ITA Airways         	0
+Brasil   IndiGo              	0
+Brasil   Delta Air Lines     	2048
+Brasil   American Airlines   	1575
+Brasil   Ethiopian Airlines  	0
+Perú     Aerolíneas Argentinas	2075
+Perú     GOL                 	0
+Perú     Lufthansa           	0
+Perú     ITA Airways         	0
+Perú     IndiGo              	0
+Perú     Delta Air Lines     	0
+Perú     American Airlines   	1763
+Perú     Ethiopian Airlines  	0
+Alemania Aerolíneas Argentinas	1968
+Alemania GOL                 	0
+Alemania Lufthansa           	4893
+Alemania ITA Airways         	0
+Alemania IndiGo              	0
+Alemania Delta Air Lines     	0
+Alemania American Airlines   	0
+Alemania Ethiopian Airlines  	0
+Italia   Aerolíneas Argentinas	1563
+Italia   GOL                 	0
+Italia   Lufthansa           	0
+Italia   ITA Airways         	5140
+Italia   IndiGo              	0
+Italia   Delta Air Lines     	0
+Italia   American Airlines   	0
+Italia   Ethiopian Airlines  	0
+India    Aerolíneas Argentinas	0
+India    GOL                 	0
+India    Lufthansa           	0
+India    ITA Airways         	0
+India    IndiGo              	4158
+India    Delta Air Lines     	0
+India    American Airlines   	0
+India    Ethiopian Airlines  	2235
+
+Aeropuerto que envió menor cantidad de pasajeros: AQP: Aeropuerto Internacional Rodríguez Ballón (Arequipa)
+Pasaeros enviados: 450 en 5 vuelos.
+
+La mayor cantidad de pasajeros (5140) se dio para la combinación Italia con aerolínea ITA Airways según el siguiente detalle diario:
+Día       Cantidad
+Viernes   893
+Lunes     847
+Domingo   828
+Miércoles 750
+Sábado    707
+Martes    662
+Jueves    453
