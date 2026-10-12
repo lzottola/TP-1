@@ -1,3 +1,12 @@
+/*
+    Codigo fuente TP°1
+    Autor: lzottola
+
+    Notas: 
+        * Los strings no se representan bien en la consola, debido a que utilizan caracters UTF-8,
+          mientras que la terminal los reconoce unicamente como ASCII (hipotesis)
+*/
+
 #include <iostream>
 #include <fstream>
 #include <string>
