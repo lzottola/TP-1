@@ -25,4 +25,4 @@ MXP	Aeropuerto de Milán-Malpensa
 VCE	Aeropuerto de Venecia-Marco Polo
 DEL	Aeropuerto Internacional Indira Gandhi (Nueva Delhi)
 BOM	Aeropuerto Internacional Chhatrapati Shivaji Maharaj (Mumbai)
-BLR	eropuerto Internacional Kempegowda (Bangalore)
+BLR	Aeropuerto Internacional Kempegowda (Bangalore)
