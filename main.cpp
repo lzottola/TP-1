@@ -51,6 +51,9 @@ void arr_insertion_sort (int* arr, size_t n, int* indices)
     }
 }
 
+/*
+    Realiza el reverso de un array
+*/
 void arr_rev (int* arr, size_t n)
 {
     for (size_t i = 0; i < n/2; i++)
@@ -114,7 +117,7 @@ int cargar_arribos (Arribo* arribos)
 }
 
 /*
-    Realiza la carga de contexto (nombres, pais, etc.)
+    Realiza la carga de contexto (lineas, paises, etc.)
 */
 int cargar_contexto (Contexto* contexto)
 {
@@ -153,7 +156,7 @@ int cargar_contexto (Contexto* contexto)
 
 /*
     Obtiene la cantidad de pasajeros semanales dado
-    un arreglo de arribos.
+    un array de arribos.
 */
 void total_pasajeros_semanales (
     Arribo* arribos, 
@@ -167,6 +170,10 @@ void total_pasajeros_semanales (
     }
 }
 
+/*
+    Obtiene un array de pasajeros por dia de semana para una
+    combinación pais/linea especificada
+*/
 void informe_pasajeros_diario (
     Arribo* arribos, 
     size_t c_arribos,
@@ -259,7 +266,7 @@ int main ()
         Nota: las siguientes funciones tienen busqueda de maximo/minimo, que deben
         ser movidas a funciones propias.
     */
-
+   
     /*
         PTO 4
     */
