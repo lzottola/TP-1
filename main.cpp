@@ -12,7 +12,7 @@
 #include <fstream>
 #include <string>
 
-#define CTD_NOMBRES 5
+#define CTD_PAISES 5
 #define CTD_LINEAS 8
 #define CTD_AEROPUERTOS 15
 
@@ -27,7 +27,7 @@ struct Contexto
         los convertimos en punteros que son lo mismo
         de cualquier forma
     */
-    std::string nombres[CTD_NOMBRES];
+    std::string paises[CTD_PAISES];
     std::string lineas[CTD_LINEAS];
     std::string aeropuertos[CTD_AEROPUERTOS];
     std::string iata[CTD_AEROPUERTOS]; /* Capaz es innecesario porque el codigo ya esta dentro del arribo */
@@ -97,10 +97,10 @@ int cargar_contexto (Contexto* contexto)
     */
     std::string input;
 
-    for (int i = 0; i < CTD_NOMBRES; i++)
+    for (int i = 0; i < CTD_PAISES; i++)
     {
         std::getline(arc_nombres, input);
-        contexto->nombres[i] = input;
+        contexto->paises[i] = input;
     }
     for (int i = 0; i < CTD_LINEAS; i++)
     {
@@ -118,16 +118,17 @@ int cargar_contexto (Contexto* contexto)
     return 1;
 }
 
+/* PUNTO 3 */
 int listado_semanal (Contexto* contexto, Arribo* arribos, size_t c_arribos)
 {
-    auto nombres = &contexto->nombres;
-    auto lineas = &contexto->lineas;
-    auto aeropuertos = &contexto->aeropuertos;
+    auto paises = contexto->paises;
+    auto lineas = contexto->lineas;
+    auto aeropuertos = contexto->aeropuertos;
 
     for (int i = 0; i < c_arribos; i++)
     {
         Arribo* arribo = &arribos[i];
-        std::cout << nombres[arribo->pais] << "\n";
+        std::cout << paises[arribo->pais] << "\n";
     }
 
     return 0;
