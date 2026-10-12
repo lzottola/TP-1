@@ -1,13 +1,3 @@
-/*
-    TP°1
-
-    Profesor: Eduardo Zuñiga
-    Curso y comisión: AyED K1041
-
-    Realizado por:
-        * Luca Patricio Zottola - lzottola@frba.utn.edu.ar
-*/
-
 #include <iostream>
 #include <fstream>
 #include <string>
