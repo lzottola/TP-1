@@ -1,3 +1,13 @@
+/*
+    TP°1
+
+    Profesor: Eduardo Zuñiga
+    Curso y comisión: AyED K1041
+
+    Realizado por:
+        * Luca Patricio Zottola - lzottola@frba.utn.edu.ar
+*/
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -42,19 +52,13 @@ std::string leer_string (std::ifstream* stream, size_t n)
 }
 
 /*
-    Realiza la carga de datos y devuelve un struct de Contexto
+    Carga de arribos
 */
-Contexto* cargar_contexto ()
+int cargar_arribos (Arribo* arribos)
 {
-    /* Carga de arribos */
-    Arribo arribos[2048];
-
     std::ifstream arc_arribos ("datos/arribos.bin", std::ios_base::binary);;
     if (!arc_arribos)
-    {
-        std::cout << "Hubo un error abriendo el archivo de nombres.\n";
-        return nullptr;
-    }
+        return 0;
 
     int ctd_arribos = 0;
     while (!arc_arribos.eof())
@@ -71,60 +75,58 @@ Contexto* cargar_contexto ()
         ctd_arribos++;
     }
 
-    /* Carga de datos aux (nombres, codigos, etc.) */
+    return 1;
+}
 
-    /* Mapeo int -> nombre */
-    std::string nombres[CTD_NOMBRES] {};
-    std::string lineas[CTD_LINEAS] {};
-    std::string aeropuertos[CTD_AEROPUERTOS] {};
-    std::string iata[CTD_AEROPUERTOS] {};
-
-    Contexto contexto;
-    contexto.nombres = nombres;
-    contexto.lineas = lineas;
-    contexto.aeropuertos = aeropuertos;
-    contexto.iata = iata;
-
+/*
+    Realiza la carga de contexto (nombres, pais, etc.)
+*/
+int cargar_contexto (Contexto* contexto)
+{
     std::ifstream arc_nombres ("datos/nombres.txt");;
     if (!arc_nombres)
-    {
-        std::cout << "Hubo un error abriendo el archivo de nombres.\n";
-        return nullptr;
-    }
+        return 0;
 
     /* 
         Utilizamos getline porque si utilizamos el operador >>, este ignora
         los espacios en blanco en vez de unicamente los newline.
     */
-
     std::string input;
+
     for (int i = 0; i < CTD_NOMBRES; i++)
     {
         std::getline(arc_nombres, input);
-        nombres[i] = input;
+        contexto->nombres[i] = input;
     }
-
     for (int i = 0; i < CTD_LINEAS; i++)
     {
         std::getline(arc_nombres, input);
-        lineas[i] = input;
+        contexto->lineas[i] = input;
     }
-
     for (int i = 0; i < CTD_AEROPUERTOS; i++)
     {
         std::getline(arc_nombres, input);
 
-        iata[i] = input.substr(0, 3); // Los codigos IATA son de 3 caracteres.
-        aeropuertos[i] = input.substr(4, input.length() - 4);
+        contexto->iata[i] = input.substr(0, 3); // Los codigos IATA son de 3 caracteres.
+        contexto->aeropuertos[i] = input.substr(4, input.length() - 4);
     }
+
+    return 1;
 }
 
 int main ()
 {
-    Contexto* contexto = cargar_contexto();
-    if (!contexto)
+    Arribo arribos[2048] {};
+    Contexto contexto {};
+
+    if (!cargar_arribos(arribos))
     {
-        std::cout << "Hubo un error cargando los datos.\n";
+        std::cout << "Hubo un error al cargar los arribos\n";
         return -1;
-    }
+    };
+    if (!cargar_contexto(&contexto))
+    {
+        std::cout << "Hubo un error al cargar el contexto\n";
+        return -1;
+    };
 }
