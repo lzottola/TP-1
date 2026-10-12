@@ -118,20 +118,44 @@ int cargar_contexto (Contexto* contexto)
     return 1;
 }
 
-/* PUNTO 3 */
-int listado_semanal (Contexto* contexto, Arribo* arribos, size_t c_arribos)
-{
-    auto paises = contexto->paises;
-    auto lineas = contexto->lineas;
-    auto aeropuertos = contexto->aeropuertos;
-
+/*
+    Obtiene la cantidad de pasajeros semanales dado
+    un arreglo de arribos.
+*/
+void total_pasajeros_semanales (
+    Arribo* arribos, 
+    size_t c_arribos, 
+    int total_pasajeros[CTD_PAISES][CTD_LINEAS]
+) {
     for (int i = 0; i < c_arribos; i++)
     {
         Arribo* arribo = &arribos[i];
-        std::cout << paises[arribo->pais] << "\n";
+        total_pasajeros[arribo->pais][arribo->linea] += arribo->pasajeros;
     }
+}
 
-    return 0;
+void total_pasajeros_aeropuerto_semanales (
+    Arribo* arribos, 
+    size_t c_arribos, 
+    int total_pasajeros_aeropuerto[CTD_AEROPUERTOS]
+) {
+    for (int i = 0; i < c_arribos; i++)
+    {
+        Arribo* arribo = &arribos[i];
+        total_pasajeros_aeropuerto[arribo->iata] += arribo->pasajeros;
+    }
+}
+
+void total_vuelos_aeropuerto (
+    Arribo* arribos, 
+    size_t c_arribos, 
+    int total_vuelos[CTD_AEROPUERTOS]
+) {
+    for (int i = 0; i < c_arribos; i++)
+    {
+        Arribo* arribo = &arribos[i];
+        total_vuelos[arribo->linea]++;
+    }
 }
 
 int main ()
@@ -153,5 +177,36 @@ int main ()
         return -1;
     };
 
-    listado_semanal(&contexto, arribos, ctd_arribos);
+    /*
+        PTO 3
+
+        Preferi separar el total de pasajeros por pais/linea y la cantidad
+        de vuelos para un aeropuerto en dos funciones distintas debido
+        a que siento que es mas modular comparado a hacer todo
+        en una misma funcion monolitica.
+    */
+    int total_pasajeros[CTD_PAISES][CTD_LINEAS] {};
+    total_pasajeros_semanales(arribos, ctd_arribos, total_pasajeros);
+
+    for (int pais = 0; pais < CTD_PAISES; pais++)
+        for (int linea = 0; linea < CTD_LINEAS; linea++)
+            std::cout << contexto.paises[pais] << "  " << contexto.lineas[linea] << "  " << total_pasajeros[pais][linea] << "\n";
+
+    int min_pasajeros = 2^31;
+    int min_pais = 0;
+    int min_linea = 0;
+    for (int pais = 0; pais < CTD_PAISES; pais++)
+        for (int linea = 0; linea < CTD_LINEAS; linea++)
+        {
+            int pasajeros = total_pasajeros[pais][linea];
+
+            if (pasajeros > 0 && pasajeros < min_pasajeros)
+            {
+                min_pasajeros = pasajeros;
+                min_pais = pais;
+                min_linea = linea;
+            }
+        }
+    
+    std::cout << "La aerolinea con menos pasajeros fue " << contexto.aeropuertos[]
 }
