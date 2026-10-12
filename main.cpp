@@ -28,7 +28,7 @@ struct Contexto
     std::string paises[CTD_PAISES];
     std::string lineas[CTD_LINEAS];
     std::string aeropuertos[CTD_AEROPUERTOS];
-    std::string iata[CTD_AEROPUERTOS]; /* Capaz es innecesario porque el codigo ya esta dentro del arribo */
+    std::string iata[CTD_AEROPUERTOS];
 };
 
 struct Arribo
