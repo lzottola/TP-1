@@ -33,33 +33,36 @@ struct Arribo
     Admite tambien un parametro de indices, para poder
     controlar donde cambio cada uno
 */
-void arr_insertion_sort (int* arr, size_t n, int* indices)
+template <typename T>
+void arr_insertion_sort (T* arr, size_t n, size_t* indices)
 {
     for (size_t i = 0; i < n; i++) {
-        int k = arr[i];
-        int j = i - 1;
+        T k = arr[i];
+        size_t ik = indices[i];
 
+        int j = i - 1;
         while (j >= 0 && arr[j] > k)
         {
-            arr[j+1] = arr[j];
-            indices[j+1] = indices[j];
+            arr[j + 1] = arr[j];
+            indices[j + 1] = indices[j];
             j--;
         }
             
-        arr[j+1] = k;
-        indices[j+1] = i;
+        arr[j + 1] = k;
+        indices[j + 1] = ik;
     }
 }
 
 /*
     Realiza el reverso de un array
 */
-void arr_rev (int* arr, size_t n)
+template <typename T>
+void arr_rev (T* arr, size_t n)
 {
     for (size_t i = 0; i < n/2; i++)
     {
-        int a = arr[i];
-        size_t c = 7 - 1 - i;
+        T a = arr[i];
+        size_t c = (n - 1) - i;
 
         arr[i] = arr[c];
         arr[c] = a;
@@ -266,7 +269,7 @@ int main ()
         Nota: las siguientes funciones tienen busqueda de maximo/minimo, que deben
         ser movidas a funciones propias.
     */
-   
+
     /*
         PTO 4
     */
@@ -328,12 +331,12 @@ int main ()
         std::cout << "La combinación con mayor pasajeros (" << max_pasajeros << ") fue " << contexto.paises[max_pais] << " " << contexto.lineas[max_linea] << "\n";
 
         int pasajeros_diarios[7] {};
-        int indices[7] {};
+        size_t indices[7] { 0, 1, 2, 3, 4, 5, 6 };
 
         informe_pasajeros_diario(arribos, ctd_arribos, max_pais, max_linea, pasajeros_diarios);
 
         /* Ordenamiento y reversa */
-        arr_insertion_sort(pasajeros_diarios, 7, indices);
+        arr_insertion_sort<int>(pasajeros_diarios, 7, indices);
         arr_rev(indices, 7);
         arr_rev(pasajeros_diarios, 7);
 
