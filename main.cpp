@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <unordered_map>
+#include <iomanip>
 
 #define CTD_PAISES 5
 #define CTD_LINEAS 8
@@ -13,11 +13,6 @@
 */
 struct Contexto
 {
-    /* 
-        C++ no permite establecer arrays, entonces
-        los convertimos en punteros que son lo mismo
-        de cualquier forma
-    */
     std::string paises[CTD_PAISES];
     std::string lineas[CTD_LINEAS];
     std::string aeropuertos[CTD_AEROPUERTOS];
@@ -32,6 +27,41 @@ struct Arribo
     int dia;
     std::string iata;
 };
+
+/*
+    Algoritmo de ordenamiento de inserción de forma ascendente
+    Admite tambien un parametro de indices, para poder
+    controlar donde cambio cada uno
+*/
+void arr_insertion_sort (int* arr, size_t n, int* indices)
+{
+    for (size_t i = 0; i < n; i++) {
+        int k = arr[i];
+        int j = i - 1;
+
+        while (j >= 0 && arr[j] > k)
+        {
+            arr[j+1] = arr[j];
+            indices[j+1] = indices[j];
+            j--;
+        }
+            
+        arr[j+1] = k;
+        indices[j+1] = i;
+    }
+}
+
+void arr_rev (int* arr, size_t n)
+{
+    for (size_t i = 0; i < n/2; i++)
+    {
+        int a = arr[i];
+        size_t c = 7 - 1 - i;
+
+        arr[i] = arr[c];
+        arr[c] = a;
+    }
+}
 
 /*
     Funcion auxiliar para leer un string desde un stream.
@@ -88,17 +118,17 @@ int cargar_contexto (Contexto* contexto)
     */
     std::string input;
 
-    for (int i = 0; i < CTD_PAISES; i++)
+    for (size_t i = 0; i < CTD_PAISES; i++)
     {
         std::getline(arc_nombres, input);
         contexto->paises[i] = input;
     }
-    for (int i = 0; i < CTD_LINEAS; i++)
+    for (size_t i = 0; i < CTD_LINEAS; i++)
     {
         std::getline(arc_nombres, input);
         contexto->lineas[i] = input;
     }
-    for (int i = 0; i < CTD_AEROPUERTOS; i++)
+    for (size_t i = 0; i < CTD_AEROPUERTOS; i++)
     {
         std::getline(arc_nombres, input);
 
@@ -118,16 +148,33 @@ void total_pasajeros_semanales (
     size_t c_arribos, 
     int pasajeros[CTD_PAISES][CTD_LINEAS]
 ) {
-    for (int i = 0; i < c_arribos; i++)
+    for (size_t i = 0; i < c_arribos; i++)
     {
         Arribo* arribo = &arribos[i];
         pasajeros[arribo->pais][arribo->linea] += arribo->pasajeros;
     }
 }
 
+void informe_pasajeros_diario (
+    Arribo* arribos, 
+    size_t c_arribos,
+    int pais,
+    int linea,
+    int pasajeros[7]
+) {
+    for (size_t i = 0; i < c_arribos; i++)
+    {
+        Arribo arribo = arribos[i];
+        if (arribo.pais != pais || arribo.linea != linea)
+            continue;
+            
+        pasajeros[arribo.dia] += arribo.pasajeros;
+    }
+}
+
 /*
     Obtiene la cantidad de pasajeros que arribaron a cada
-    aeropuerto
+    aeropuerto ademas de la cantidad de vuelos
 
     * Nota: preferiria utilizar un hashmap en vez de tener un lookup
     O(n^2), pero no se si es que esta permitido. Dejo una mejor solución para otro dia
@@ -136,7 +183,8 @@ void total_pasajeros_aeropuerto_semanales (
     Arribo* arribos,
     size_t c_arribos,
     std::string codigos[CTD_AEROPUERTOS],
-    int pasajeros[CTD_AEROPUERTOS]
+    int pasajeros[CTD_AEROPUERTOS],
+    int vuelos[CTD_AEROPUERTOS]
 ) {
     for (int i = 0; i < c_arribos; i++)
     {
@@ -144,19 +192,10 @@ void total_pasajeros_aeropuerto_semanales (
 
         for (int j = 0; j < CTD_AEROPUERTOS; j++)
             if (codigos[j] == (arribo->iata))
+            {
                 pasajeros[j] += arribo->pasajeros;
-    }
-}
-
-void total_vuelos_aeropuerto (
-    Arribo* arribos, 
-    size_t c_arribos, 
-    int total_vuelos[CTD_AEROPUERTOS]
-) {
-    for (int i = 0; i < c_arribos; i++)
-    {
-        Arribo* arribo = &arribos[i];
-        total_vuelos[arribo->linea]++;
+                vuelos[j]++;
+            }
     }
 }
 
@@ -181,44 +220,108 @@ int main ()
 
     /*
         PTO 3
-
-        Preferi separar el total de pasajeros por pais/linea y la cantidad
-        de vuelos para un aeropuerto en dos funciones distintas debido
-        a que siento que es mas modular comparado a hacer todo
-        en una misma funcion monolitica.
     */
     {
         int pasajeros[CTD_PAISES][CTD_LINEAS] {};
-        total_pasajeros_semanales(arribos, ctd_arribos, pasajeros);
+        total_pasajeros_semanales(arribos, ctd_arribos, pasajeros); 
+
+        int padding_pais = 10;
+        int padding_lineas = 25;
+        int padding_pasajeros = 25;
+
+        std::cout << "===== INFORME DE PASAJEROS =====\n";
+        std::cout << std::left << std::setfill(' ')
+                  << std::setw(padding_pais) << "Pais"
+                  << std::setw(padding_lineas) << "Linea"
+                  << std::setw(padding_pasajeros) << "Pasajeros" << "\n";
 
         for (int pais = 0; pais < CTD_PAISES; pais++)
             for (int linea = 0; linea < CTD_LINEAS; linea++)
-                std::cout << contexto.paises[pais] << "  " << contexto.lineas[linea] << "  " << pasajeros[pais][linea] << "\n";
+                std::cout << std::left << std::setfill(' ')
+                          << std::setw(padding_pais) << contexto.paises[pais] 
+                          << std::setw(padding_lineas) << contexto.lineas[linea]
+                          << std::setw(padding_pasajeros) << pasajeros[pais][linea] << "\n";
     }
 
     /*
-        PTO 4
+        Nota: las siguientes funciones tienen busqueda de maximo/minimo, que deben
+        ser movidas a funciones propias.
+    */
 
-        Por ahora, utilizo un hashmap debido a que es muchisimo mas conveniente
-        mapear cada codigo a su aeropuerto en vez de hacer cualquier otra locura
+    /*
+        PTO 4
     */
     {
-        int pasajeros[CTD_AEROPUERTOS] {};
-        total_pasajeros_aeropuerto_semanales(arribos, ctd_arribos, contexto.iata, pasajeros);
+        int total_pasajeros[CTD_AEROPUERTOS] {};
+        int total_vuelos[CTD_AEROPUERTOS] {};
+        total_pasajeros_aeropuerto_semanales(arribos, ctd_arribos, contexto.iata, total_pasajeros, total_vuelos);
 
         int min_pasajeros = 100000000;
         int min_aeropuerto = 0;
+
         for (int aeropuerto = 0; aeropuerto < CTD_AEROPUERTOS; aeropuerto++)
         {
-            int pasajeros_aeropuerto = pasajeros[aeropuerto];
+            int pasajeros = total_pasajeros[aeropuerto];
 
-            if (pasajeros_aeropuerto > 0 && pasajeros_aeropuerto < min_pasajeros)
+            if (pasajeros > 0 && pasajeros < min_pasajeros)
             {
-                min_pasajeros = pasajeros_aeropuerto;
+                min_pasajeros = pasajeros;
                 min_aeropuerto = aeropuerto;
             }
         }
         
+        std::cout << "\n";
         std::cout << "La aerolinea con menos pasajeros fue " << contexto.aeropuertos[min_aeropuerto] << "\n";
+        std::cout << "Tuvo " << min_pasajeros << " pasajeros en " << total_vuelos[min_aeropuerto] << " vuelos\n";
     }
+
+    /*
+        PTO 5
+    */
+   {
+        /* 
+            Se podria reutilizar la misma estructura cargada del PTO 3, pero
+            decidi no hacerlo por si es que despues muevo cada uno a una
+            función unica.
+        */
+        int pasajeros[CTD_PAISES][CTD_LINEAS] {};
+        total_pasajeros_semanales(arribos, ctd_arribos, pasajeros);
+
+        int max_pasajeros = 0;
+
+        int max_pais = 0;
+        int max_linea = 0;
+
+        for (int pais = 0; pais < CTD_PAISES; pais++)
+            for (int linea = 0; linea < CTD_LINEAS; linea++)
+            {
+                int combinacion_pasajeros = pasajeros[pais][linea];
+
+                if (combinacion_pasajeros > max_pasajeros)
+                {
+                    max_pasajeros = combinacion_pasajeros;
+                    max_pais = pais;
+                    max_linea = linea;
+                }
+            }
+        
+        std::cout << "\n";
+        std::cout << "La combinación con mayor pasajeros (" << max_pasajeros << ") fue " << contexto.paises[max_pais] << " " << contexto.lineas[max_linea] << "\n";
+
+        int pasajeros_diarios[7] {};
+        int indices[7] {};
+
+        informe_pasajeros_diario(arribos, ctd_arribos, max_pais, max_linea, pasajeros_diarios);
+
+        /* Ordenamiento y reversa */
+        arr_insertion_sort(pasajeros_diarios, 7, indices);
+        arr_rev(indices, 7);
+        arr_rev(pasajeros_diarios, 7);
+
+        std::string dias[7] { "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo" };
+        for (int i = 0; i < 7; i++)
+            std::cout << std::left << std::setfill(' ')
+                      << std::setw(10) << dias[indices[i]]
+                      << pasajeros_diarios[i] << "\n";
+   }
 }
