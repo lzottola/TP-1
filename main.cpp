@@ -66,7 +66,7 @@ void arr_rev (int* arr, size_t n)
 /*
     Funcion auxiliar para leer un string desde un stream.
 */
-std::string leer_string (std::ifstream* stream, size_t n)
+std::string read_string (std::ifstream* stream, size_t n)
 {
     std::string str(n, '-');
     stream->read(&str[0], n);
@@ -86,20 +86,30 @@ int cargar_arribos (Arribo* arribos)
         return 0;
 
     int ctd_arribos = 0;
-    while (!arc_arribos.eof())
+
+    while (true)
     {
-        Arribo arribo;
+        Arribo arribo {};
 
         arc_arribos.read((char*)&arribo.pais, sizeof(int));
         arc_arribos.read((char*)&arribo.linea, sizeof(int));
-        arribo.iata = leer_string(&arc_arribos, 3);
+        arribo.iata = read_string(&arc_arribos, 3);
         arc_arribos.read((char*)&arribo.pasajeros, sizeof(int));
         arc_arribos.read((char*)&arribo.dia, sizeof(int));
+
+        /*
+            Documentación: el failbit de un ifstream se setea unicamente
+            despues de leer. Si es que fallo en la lectura, podriamos escribir
+            datos basura por accidente.
+        */
+        if (!arc_arribos)
+            break;
 
         arribos[ctd_arribos] = arribo;
         ctd_arribos++;
     }
 
+    arc_arribos.close();
     return ctd_arribos;
 }
 
@@ -135,6 +145,8 @@ int cargar_contexto (Contexto* contexto)
         contexto->iata[i] = input.substr(0, 3); // Los codigos IATA son de 3 caracteres.
         contexto->aeropuertos[i] = input.substr(4, input.length() - 4);
     }
+
+    arc_nombres.close();
 
     return 1;
 }
