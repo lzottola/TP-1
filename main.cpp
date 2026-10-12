@@ -6,6 +6,23 @@
 #define CTD_LINEAS 8
 #define CTD_AEROPUERTOS 15
 
+/*
+    Struct auxiliar para poder utilizarlo en funciones
+    fuera de main sin tener que pasar muchos argumentos.
+*/
+struct Contexto
+{
+    /* 
+        C++ no permite establecer arrays, entonces
+        los convertimos en punteros que son lo mismo
+        de cualquier forma
+    */
+    std::string* nombres;
+    std::string* lineas;
+    std::string* aeropuertos;
+    std::string* iata;
+};
+
 struct Arribo
 {
     int pais;
@@ -18,13 +35,16 @@ struct Arribo
 /*
     Funcion auxiliar para leer un string desde un stream.
 */
-std::string leer_string(std::ifstream* stream, size_t n)
+std::string leer_string (std::ifstream* stream, size_t n)
 {
     std::string str(n, '-');
     stream->read(&str[0], n);
 }
 
-int main ()
+/*
+    Realiza la carga de datos y devuelve un struct de Contexto
+*/
+Contexto* cargar_contexto ()
 {
     /* Carga de arribos */
     Arribo arribos[2048];
@@ -33,7 +53,7 @@ int main ()
     if (!arc_arribos)
     {
         std::cout << "Hubo un error abriendo el archivo de nombres.\n";
-        return -1;
+        return nullptr;
     }
 
     int ctd_arribos = 0;
@@ -59,11 +79,17 @@ int main ()
     std::string aeropuertos[CTD_AEROPUERTOS] {};
     std::string iata[CTD_AEROPUERTOS] {};
 
+    Contexto contexto;
+    contexto.nombres = nombres;
+    contexto.lineas = lineas;
+    contexto.aeropuertos = aeropuertos;
+    contexto.iata = iata;
+
     std::ifstream arc_nombres ("datos/nombres.txt");;
     if (!arc_nombres)
     {
         std::cout << "Hubo un error abriendo el archivo de nombres.\n";
-        return -1;
+        return nullptr;
     }
 
     /* 
@@ -90,5 +116,15 @@ int main ()
 
         iata[i] = input.substr(0, 3); // Los codigos IATA son de 3 caracteres.
         aeropuertos[i] = input.substr(4, input.length() - 4);
+    }
+}
+
+int main ()
+{
+    Contexto* contexto = cargar_contexto();
+    if (!contexto)
+    {
+        std::cout << "Hubo un error cargando los datos.\n";
+        return -1;
     }
 }
