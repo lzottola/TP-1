@@ -4,7 +4,10 @@
 
     Notas: 
         * Los strings no se representan bien en la consola, debido a que utilizan caracters UTF-8,
-          mientras que la terminal los reconoce unicamente como ASCII (hipotesis)
+          mientras que la terminal los reconoce unicamente como ASCII. (hipotesis)
+        * Utiliza un array con una maxima capacidad de 2048. Esto hace que puede que sobre o que
+          falten arribos debido a que no tiene una implementación para aumentar o decrecer de tamaño
+          a medida que se añaden datos.
 */
 
 #include <iostream>
