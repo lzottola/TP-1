@@ -27,10 +27,10 @@ struct Contexto
         los convertimos en punteros que son lo mismo
         de cualquier forma
     */
-    std::string* nombres;
-    std::string* lineas;
-    std::string* aeropuertos;
-    std::string* iata;
+    std::string nombres[CTD_NOMBRES];
+    std::string lineas[CTD_LINEAS];
+    std::string aeropuertos[CTD_AEROPUERTOS];
+    std::string iata[CTD_AEROPUERTOS]; /* Capaz es innecesario porque el codigo ya esta dentro del arribo */
 };
 
 struct Arribo
@@ -49,10 +49,14 @@ std::string leer_string (std::ifstream* stream, size_t n)
 {
     std::string str(n, '-');
     stream->read(&str[0], n);
+
+    return str;
 }
 
 /*
-    Carga de arribos
+    Carga de arribos.
+    Devuelve la cantidad de arribos cargados (hasta que decida cambiarlo
+    por una linked list o un vector)
 */
 int cargar_arribos (Arribo* arribos)
 {
@@ -75,7 +79,7 @@ int cargar_arribos (Arribo* arribos)
         ctd_arribos++;
     }
 
-    return 1;
+    return ctd_arribos;
 }
 
 /*
@@ -114,12 +118,30 @@ int cargar_contexto (Contexto* contexto)
     return 1;
 }
 
+int listado_semanal (Contexto* contexto, Arribo* arribos, size_t c_arribos)
+{
+    auto nombres = &contexto->nombres;
+    auto lineas = &contexto->lineas;
+    auto aeropuertos = &contexto->aeropuertos;
+
+    for (int i = 0; i < c_arribos; i++)
+    {
+        Arribo* arribo = &arribos[i];
+        std::cout << nombres[arribo->pais] << "\n";
+    }
+
+    return 0;
+}
+
 int main ()
 {
+    size_t ctd_arribos {};
     Arribo arribos[2048] {};
     Contexto contexto {};
 
-    if (!cargar_arribos(arribos))
+    ctd_arribos = cargar_arribos(arribos);
+
+    if (!ctd_arribos)
     {
         std::cout << "Hubo un error al cargar los arribos\n";
         return -1;
@@ -129,4 +151,6 @@ int main ()
         std::cout << "Hubo un error al cargar el contexto\n";
         return -1;
     };
+
+    listado_semanal(&contexto, arribos, ctd_arribos);
 }
