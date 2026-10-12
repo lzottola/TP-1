@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <unordered_map>
 
 #define CTD_PAISES 5
 #define CTD_LINEAS 8
@@ -115,24 +116,35 @@ int cargar_contexto (Contexto* contexto)
 void total_pasajeros_semanales (
     Arribo* arribos, 
     size_t c_arribos, 
-    int total_pasajeros[CTD_PAISES][CTD_LINEAS]
+    int pasajeros[CTD_PAISES][CTD_LINEAS]
 ) {
     for (int i = 0; i < c_arribos; i++)
     {
         Arribo* arribo = &arribos[i];
-        total_pasajeros[arribo->pais][arribo->linea] += arribo->pasajeros;
+        pasajeros[arribo->pais][arribo->linea] += arribo->pasajeros;
     }
 }
 
+/*
+    Obtiene la cantidad de pasajeros que arribaron a cada
+    aeropuerto
+
+    * Nota: preferiria utilizar un hashmap en vez de tener un lookup
+    O(n^2), pero no se si es que esta permitido. Dejo una mejor solución para otro dia
+*/
 void total_pasajeros_aeropuerto_semanales (
-    Arribo* arribos, 
-    size_t c_arribos, 
-    int total_pasajeros_aeropuerto[CTD_AEROPUERTOS]
+    Arribo* arribos,
+    size_t c_arribos,
+    std::string codigos[CTD_AEROPUERTOS],
+    int pasajeros[CTD_AEROPUERTOS]
 ) {
     for (int i = 0; i < c_arribos; i++)
     {
         Arribo* arribo = &arribos[i];
-        total_pasajeros_aeropuerto[arribo->iata] += arribo->pasajeros;
+
+        for (int j = 0; j < CTD_AEROPUERTOS; j++)
+            if (codigos[j] == (arribo->iata))
+                pasajeros[j] += arribo->pasajeros;
     }
 }
 
@@ -175,28 +187,38 @@ int main ()
         a que siento que es mas modular comparado a hacer todo
         en una misma funcion monolitica.
     */
-    int total_pasajeros[CTD_PAISES][CTD_LINEAS] {};
-    total_pasajeros_semanales(arribos, ctd_arribos, total_pasajeros);
+    {
+        int pasajeros[CTD_PAISES][CTD_LINEAS] {};
+        total_pasajeros_semanales(arribos, ctd_arribos, pasajeros);
 
-    for (int pais = 0; pais < CTD_PAISES; pais++)
-        for (int linea = 0; linea < CTD_LINEAS; linea++)
-            std::cout << contexto.paises[pais] << "  " << contexto.lineas[linea] << "  " << total_pasajeros[pais][linea] << "\n";
+        for (int pais = 0; pais < CTD_PAISES; pais++)
+            for (int linea = 0; linea < CTD_LINEAS; linea++)
+                std::cout << contexto.paises[pais] << "  " << contexto.lineas[linea] << "  " << pasajeros[pais][linea] << "\n";
+    }
 
-    int min_pasajeros = 2^31;
-    int min_pais = 0;
-    int min_linea = 0;
-    for (int pais = 0; pais < CTD_PAISES; pais++)
-        for (int linea = 0; linea < CTD_LINEAS; linea++)
+    /*
+        PTO 4
+
+        Por ahora, utilizo un hashmap debido a que es muchisimo mas conveniente
+        mapear cada codigo a su aeropuerto en vez de hacer cualquier otra locura
+    */
+    {
+        int pasajeros[CTD_AEROPUERTOS] {};
+        total_pasajeros_aeropuerto_semanales(arribos, ctd_arribos, contexto.iata, pasajeros);
+
+        int min_pasajeros = 100000000;
+        int min_aeropuerto = 0;
+        for (int aeropuerto = 0; aeropuerto < CTD_AEROPUERTOS; aeropuerto++)
         {
-            int pasajeros = total_pasajeros[pais][linea];
+            int pasajeros_aeropuerto = pasajeros[aeropuerto];
 
-            if (pasajeros > 0 && pasajeros < min_pasajeros)
+            if (pasajeros_aeropuerto > 0 && pasajeros_aeropuerto < min_pasajeros)
             {
-                min_pasajeros = pasajeros;
-                min_pais = pais;
-                min_linea = linea;
+                min_pasajeros = pasajeros_aeropuerto;
+                min_aeropuerto = aeropuerto;
             }
         }
-    
-    std::cout << "La aerolinea con menos pasajeros fue " << contexto.aeropuertos[]
+        
+        std::cout << "La aerolinea con menos pasajeros fue " << contexto.aeropuertos[min_aeropuerto] << "\n";
+    }
 }

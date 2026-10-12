@@ -5,4 +5,8 @@ param(
 )
 
 & g++ -std=c++17 .\main.cpp  -o tp1.exe
-& .\tp1.exe
+
+if ($run)
+{
+    & .\tp1.exe
+}
